@@ -23,23 +23,9 @@ mongo_url = os.environ['MONGO_URL']
 client = AsyncIOMotorClient(mongo_url)
 db = client[os.environ['DB_NAME']]
 
-# Initialize Firebase Admin
-# Note: In production, use a service account key file
-try:
-    firebase_admin.get_app()
-except ValueError:
-    cred = credentials.Certificate({
-        "type": "service_account",
-        "project_id": "travel-wizard-ttt",
-        "private_key_id": "dummy",
-        "private_key": "-----BEGIN PRIVATE KEY-----\nDUMMY_KEY\n-----END PRIVATE KEY-----\n",
-        "client_email": "firebase-adminsdk@travel-wizard-ttt.iam.gserviceaccount.com",
-        "client_id": "dummy",
-        "auth_uri": "https://accounts.google.com/o/oauth2/auth",
-        "token_uri": "https://oauth2.googleapis.com/token",
-    })
-    # For demo purposes, we'll mock the Firebase initialization
-    # firebase_admin.initialize_app(cred)
+# Initialize Firebase Admin - Mock for demo
+# Note: In production, use a real service account key file
+MOCK_AUTH = True  # Set to False in production with real Firebase credentials
 
 # Create the main app
 app = FastAPI(title="Travel Wizard API")

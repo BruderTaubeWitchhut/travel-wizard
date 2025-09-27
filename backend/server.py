@@ -299,6 +299,10 @@ async def vote_activity(group_id: str, request: VoteActivityRequest):
 async def get_group_votes(group_id: str):
     """Get voting results for a group"""
     votes = await db.votes.find({"group_id": group_id}).to_list(length=None)
+    # Convert ObjectId to string for JSON serialization
+    for vote in votes:
+        if '_id' in vote:
+            vote['_id'] = str(vote['_id'])
     return votes
 
 @api_router.post("/bookings", response_model=TripBooking)

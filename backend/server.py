@@ -385,6 +385,15 @@ async def get_dashboard_data(user_id: str):
     # Get user's groups
     groups = await db.groups.find({"members": user_id}).to_list(length=None)
     
+    # Convert ObjectId to string for JSON serialization
+    for booking in bookings:
+        if '_id' in booking:
+            booking['_id'] = str(booking['_id'])
+    
+    for group in groups:
+        if '_id' in group:
+            group['_id'] = str(group['_id'])
+    
     # Mock weather and tips data
     dashboard_data = {
         "bookings": bookings,

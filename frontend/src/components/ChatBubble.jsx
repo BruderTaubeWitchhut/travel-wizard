@@ -87,7 +87,7 @@ const ChatBubble = () => {
     <>
       {/* Chat Bubble */}
       {!isOpen && (
-        <div className="fixed bottom-6 right-6 z-50">
+        <div className="fixed bottom-6 right-6 z-40">
           <Button
             onClick={() => setIsOpen(true)}
             className="h-14 w-14 rounded-full bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
@@ -100,7 +100,7 @@ const ChatBubble = () => {
 
       {/* Chat Window */}
       {isOpen && (
-        <div className="fixed bottom-6 right-6 z-50 w-80 h-96 bg-white rounded-2xl shadow-2xl border border-gray-200 flex flex-col" data-testid="chat-window">
+        <div className="fixed bottom-6 right-6 z-40 w-80 h-96 bg-white rounded-2xl shadow-2xl border border-gray-200 flex flex-col" data-testid="chat-window">
           {/* Header */}
           <div className="bg-gradient-to-r from-blue-500 to-indigo-600 p-4 rounded-t-2xl text-white flex justify-between items-center">
             <div className="flex items-center space-x-2">

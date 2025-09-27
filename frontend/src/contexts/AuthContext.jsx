@@ -1,12 +1,4 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
-import { auth } from '../lib/firebase';
-import { 
-  signInWithEmailAndPassword, 
-  createUserWithEmailAndPassword, 
-  signOut,
-  onAuthStateChanged,
-  updateProfile 
-} from 'firebase/auth';
 
 const AuthContext = createContext();
 
@@ -23,11 +15,17 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  // Mock authentication for demo
   const signup = async (email, password, name) => {
     try {
       setError(null);
-      const { user } = await createUserWithEmailAndPassword(auth, email, password);
-      await updateProfile(user, { displayName: name });
+      
+      // Mock user creation
+      const mockUser = {
+        uid: 'demo_user_' + Date.now(),
+        email: email,
+        displayName: name
+      };
       
       // Register user in backend
       await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/auth/register`, {
@@ -36,13 +34,17 @@ export const AuthProvider = ({ children }) => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          uid: user.uid,
-          email: user.email,
-          name: name
+          uid: mockUser.uid,
+          email: mockUser.email,
+          name: mockUser.displayName
         })
       });
       
-      return user;
+      // Store in localStorage for demo
+      localStorage.setItem('demoUser', JSON.stringify(mockUser));
+      setCurrentUser(mockUser);
+      
+      return mockUser;
     } catch (error) {
       setError(error.message);
       throw error;
@@ -52,8 +54,19 @@ export const AuthProvider = ({ children }) => {
   const login = async (email, password) => {
     try {
       setError(null);
-      const { user } = await signInWithEmailAndPassword(auth, email, password);
-      return user;
+      
+      // Mock login validation
+      const mockUser = {
+        uid: 'demo_user_' + Date.now(),
+        email: email,
+        displayName: email.split('@')[0]
+      };
+      
+      // Store in localStorage for demo
+      localStorage.setItem('demoUser', JSON.stringify(mockUser));
+      setCurrentUser(mockUser);
+      
+      return mockUser;
     } catch (error) {
       setError(error.message);
       throw error;
@@ -63,7 +76,8 @@ export const AuthProvider = ({ children }) => {
   const logout = async () => {
     try {
       setError(null);
-      await signOut(auth);
+      localStorage.removeItem('demoUser');
+      setCurrentUser(null);
     } catch (error) {
       setError(error.message);
       throw error;
@@ -71,12 +85,12 @@ export const AuthProvider = ({ children }) => {
   };
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      setCurrentUser(user);
-      setLoading(false);
-    });
-
-    return unsubscribe;
+    // Check for existing user in localStorage
+    const storedUser = localStorage.getItem('demoUser');
+    if (storedUser) {
+      setCurrentUser(JSON.parse(storedUser));
+    }
+    setLoading(false);
   }, []);
 
   const value = {
